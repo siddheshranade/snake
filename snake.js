@@ -8,6 +8,8 @@ let context;
 /* snake details */
 let snakeX = BLOCK_SIZE * 5; // 5 chosen randomly
 let snakeY = BLOCK_SIZE * 5;
+let velocityX = 0;
+let velocityY = 0;
 
 /* food details */
 let foodX; // 5 chosen randomly
@@ -20,14 +22,19 @@ window.onload = () => {
   context = board.getContext('2d');
 
   placeFood();
-  updateBoard();
+  document.addEventListener('keyup', changeDirection);
+
+  setInterval(updateBoard, 100);
 }
 
 const updateBoard = () => {
+  // console.log('updated!');
   context.fillStyle = 'black';
   context.fillRect(0, 0, board.width, board.height);
 
   context.fillStyle = 'lime';
+  snakeX += velocityX * BLOCK_SIZE;
+  snakeY += velocityY * BLOCK_SIZE;
   context.fillRect(snakeX, snakeY, BLOCK_SIZE, BLOCK_SIZE);
 
   context.fillStyle = 'red';
@@ -37,4 +44,20 @@ const updateBoard = () => {
 const placeFood = () => {
   foodX  = Math.floor(Math.random() * COLS) * BLOCK_SIZE;
   foodY= Math.floor(Math.random() * ROWS) * BLOCK_SIZE;
+};
+
+const changeDirection = e => {
+  if (e.code === 'ArrowUp') {
+    velocityX = 0;
+    velocityY = -1;
+  } else if (e.code === 'ArrowDown') {
+    velocityX = 0;
+    velocityY = 1;
+  } else if (e.code === 'ArrowLeft') {
+    velocityX = -1;
+    velocityY = 0;
+  } else if (e.code === 'ArrowRight') {
+    velocityX = 1;
+    velocityY = 0;
+  }
 }
