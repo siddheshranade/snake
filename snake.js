@@ -1,7 +1,7 @@
 /* board details */
 const BLOCK_SIZE = 25; // each block is 5x5 pixels
-const ROWS = 25;
-const COLS = 25;
+const ROWS = 20;
+const COLS = 20;
 let board;
 let context;
 
@@ -10,10 +10,14 @@ let snakeX = BLOCK_SIZE * 5; // 5 chosen randomly
 let snakeY = BLOCK_SIZE * 5;
 let velocityX = 0;
 let velocityY = 0;
+let snakeBody = [];
 
 /* food details */
-let foodX; // 5 chosen randomly
+let foodX;
 let foodY;
+
+/* game state */
+let gameOver = false;
 
 window.onload = () => {
   board = document.getElementById('board');
@@ -21,29 +25,66 @@ window.onload = () => {
   board.width = ROWS * BLOCK_SIZE;
   context = board.getContext('2d');
 
-  placeFood();
+  setNewFoodLocation();
   document.addEventListener('keyup', changeDirection);
 
   setInterval(updateBoard, 100);
 }
 
 const updateBoard = () => {
-  // console.log('updated!');
-  createBoard();
-  updateFood();
-  checkIfFoodEaten();
-  updateSnake();
+  if (gameOver) return;
+
+  refreshBoard();
+  updateFoodOnBoard();
+  eatFoodIfPossible();
+  updateSnakeOnBoard();
+  checkIfGameOver();
 };
 
-const checkIfFoodEaten = () => {
-  if (snakeX === foodX && snakeY === foodY) {
-    placeFood();
+const updateSnakeOnBoard = () => {
+  for (let i = snakeBody.length - 1; i > 0; i--) {
+    snakeBody[i] = snakeBody[i - 1];
+  }
+
+  if (snakeBody.length) {
+    snakeBody[0] = [snakeX, snakeY];
+  }
+
+  snakeX += velocityX * BLOCK_SIZE;
+  snakeY += velocityY * BLOCK_SIZE;
+
+  context.fillStyle = 'lime';
+  context.fillRect(snakeX, snakeY, BLOCK_SIZE, BLOCK_SIZE);
+  for (let i = 0; i < snakeBody.length; i++) {
+    context.fillRect(snakeBody[i][0], 
+      snakeBody[i][1], BLOCK_SIZE, BLOCK_SIZE);
+  }
+};
+
+const checkIfGameOver = () => {
+  if (snakeX < 0 || snakeX > COLS * BLOCK_SIZE || snakeY < 0 || snakeY > ROWS * BLOCK_SIZE) {
+    gameOver = true;
+    alert('GAME OVER');
+  }
+
+  for (let i = 0; i < snakeBody.length; i++) {
+    if (snakeX === snakeBody[i][0] && snakeY === snakeBody[i][1]) {
+      gameOver = true;
+      alert('GAME OVER');
+    }
   }
 }
 
-const placeFood = () => {
-  foodX  = Math.floor(Math.random() * COLS) * BLOCK_SIZE;
-  foodY= Math.floor(Math.random() * ROWS) * BLOCK_SIZE;
+const eatFoodIfPossible = () => {
+  if (snakeX === foodX && snakeY === foodY) {
+    snakeBody.push([snakeX, snakeY]);
+    setNewFoodLocation();
+  }
+};
+
+const setNewFoodLocation = () => {
+  foodX = Math.floor(Math.random() * COLS) * BLOCK_SIZE;
+  foodY = Math.floor(Math.random() * ROWS) * BLOCK_SIZE;
 };
 
 const changeDirection = e => {
@@ -64,19 +105,12 @@ const changeDirection = e => {
   }
 };
 
-const createBoard = () => {
+const refreshBoard = () => {
   context.fillStyle = 'black';
   context.fillRect(0, 0, board.width, board.height);
 };
 
-const updateSnake = () => {
-  context.fillStyle = 'lime';
-  snakeX += velocityX * BLOCK_SIZE;
-  snakeY += velocityY * BLOCK_SIZE;
-  context.fillRect(snakeX, snakeY, BLOCK_SIZE, BLOCK_SIZE);
-};
-
-const updateFood = () => {
+const updateFoodOnBoard = () => {
   context.fillStyle = 'red';
   context.fillRect(foodX, foodY, BLOCK_SIZE, BLOCK_SIZE);
 };
