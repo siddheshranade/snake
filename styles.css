@@ -3,3 +3,11 @@ body {
   text-align: center;
   background: #FCD7AD;
 }
+
+#scores_div {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+}

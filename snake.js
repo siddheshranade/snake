@@ -24,10 +24,13 @@ const SNAKE_COLOR = '#5296A5'; // lime
 /* game state */
 let gameOver = false;
 let score = 0;
+let highscore = localStorage.getItem('highscore') || 0;
 let scoreElement = document.getElementById('score');
 
 /* methods */
 window.onload = () => {
+  document.getElementById('highscore').innerHTML = `Highscore: ${highscore}`;
+  
   board = document.getElementById('board');
   board.height = COLS * BLOCK_SIZE; // i.e. 625 pixels
   board.width = ROWS * BLOCK_SIZE;
@@ -76,10 +79,6 @@ const updateSnakeOnBoard = () => {
 };
 
 const checkIfGameOver = () => {
-  // if (snakeX < 0 || snakeX > COLS * BLOCK_SIZE || snakeY < 0 || snakeY > ROWS * BLOCK_SIZE) {
-  //   gameOver = true;
-  // }
-
   if (snakeX < 0) {
     snakeX = COLS * BLOCK_SIZE;
   } else if (snakeX > COLS * BLOCK_SIZE) {
@@ -93,7 +92,8 @@ const checkIfGameOver = () => {
   for (let i = 0; i < snakeBody.length; i++) {
     if (snakeX === snakeBody[i][0] && snakeY === snakeBody[i][1]) {
       gameOver = true;
-      // alert(`GAME OVER. SCORE: ${score}`);
+      // highscore = Math.max(highscore, score);
+      localStorage.setItem('highscore', Math.max(highscore, score)); 
     }
   }
 }
@@ -101,6 +101,7 @@ const checkIfGameOver = () => {
 const eatFoodIfPossible = () => {
   if (snakeX === foodX && snakeY === foodY) {
     score++;
+    highscore = Math.max(highscore, score);
     scoreElement.innerHTML = `Score: ${score}`;
     snakeBody.push([snakeX, snakeY]);
     setNewFoodLocation();
@@ -127,6 +128,7 @@ const changeDirection = e => {
     velocityY = 0;
   } else if (e.code === 'Space') {
     velocityX = velocityY = 0;
+    gameOver = true;
   }
 };
 
