@@ -1,7 +1,7 @@
 /* board details */
-const BLOCK_SIZE = 25; // each block is 5x5 pixels
-const ROWS = 20;
-const COLS = 20;
+const BLOCK_SIZE = 23; // each block is 5x5 pixels
+const ROWS = 25;
+const COLS = 25;
 let board;
 let context;
 
@@ -19,6 +19,7 @@ let foodY;
 /* game state */
 let gameOver = false;
 let score = 0;
+let scoreElement = document.getElementById('score');
 
 window.onload = () => {
   board = document.getElementById('board');
@@ -29,7 +30,7 @@ window.onload = () => {
   setNewFoodLocation();
   document.addEventListener('keyup', changeDirection);
 
-  setInterval(updateBoard, 80);
+  setInterval(updateBoard, 90);
 }
 
 const updateBoard = () => {
@@ -85,6 +86,7 @@ const checkIfGameOver = () => {
 const eatFoodIfPossible = () => {
   if (snakeX === foodX && snakeY === foodY) {
     score++;
+    scoreElement.innerHTML = `Score: ${score}`;
     snakeBody.push([snakeX, snakeY]);
     setNewFoodLocation();
   }
