@@ -1,5 +1,5 @@
 /* board details */
-const BLOCK_SIZE = 20;
+const BLOCK_SIZE = 18;
 const ROWS = 25;
 const COLS = 25;
 let board;
@@ -30,7 +30,7 @@ let scoreElement = document.getElementById('score');
 /* methods */
 window.onload = () => {
   document.getElementById('highscore').innerHTML = `Highscore: ${highscore}`;
-  
+
   board = document.getElementById('board');
   board.height = COLS * BLOCK_SIZE; // i.e. 625 pixels
   board.width = ROWS * BLOCK_SIZE;
@@ -39,7 +39,7 @@ window.onload = () => {
   setNewFoodLocation();
   document.addEventListener('keyup', changeDirection);
 
-  setInterval(updateBoard, 80);
+  setInterval(updateBoard, 76);
 }
 
 const updateBoard = () => {
@@ -53,6 +53,7 @@ const updateBoard = () => {
 };
 
 const updateSnakeOnBoard = () => {
+  moveSnakeThroughWalls();
   // getting rid of last element (tail) because snake is moving ahead
   for (let i = snakeBody.length - 1; i > 0; i--) {
     snakeBody[i] = snakeBody[i - 1];
@@ -70,15 +71,16 @@ const updateSnakeOnBoard = () => {
   // drawing new head BUT not adding it to array; that will happen in next render
   context.fillStyle = SNAKE_COLOR;
   context.fillRect(snakeX, snakeY, BLOCK_SIZE, BLOCK_SIZE);
+  // context.roundRect(snakeX, snakeY, BLOCK_SIZE, BLOCK_SIZE, 5);
 
   // drawing rest of the snake body - element at 0 is prev head so snake looks attached
   for (let i = 0; i < snakeBody.length; i++) {
     context.fillRect(snakeBody[i][0], 
       snakeBody[i][1], BLOCK_SIZE, BLOCK_SIZE);
-  }
+  } 
 };
 
-const checkIfGameOver = () => {
+const moveSnakeThroughWalls = () => {
   if (snakeX < 0) {
     snakeX = COLS * BLOCK_SIZE;
   } else if (snakeX > COLS * BLOCK_SIZE) {
@@ -87,12 +89,13 @@ const checkIfGameOver = () => {
     snakeY = ROWS * BLOCK_SIZE;
   } else if (snakeY > ROWS * BLOCK_SIZE) {
     snakeY = 0;
-  }
+  } 
+}
 
+const checkIfGameOver = () => {
   for (let i = 0; i < snakeBody.length; i++) {
     if (snakeX === snakeBody[i][0] && snakeY === snakeBody[i][1]) {
       gameOver = true;
-      // highscore = Math.max(highscore, score);
       localStorage.setItem('highscore', Math.max(highscore, score)); 
     }
   }
