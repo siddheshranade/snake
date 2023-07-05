@@ -2,6 +2,8 @@
 const BLOCK_SIZE = 18;
 const ROWS = 25;
 const COLS = 25;
+const BOARD_HEIGHT = ROWS * BLOCK_SIZE;
+const BOARD_WIDTH = COLS * BLOCK_SIZE;
 let board;
 let context;
 
@@ -26,14 +28,15 @@ let gameOver = false;
 let score = 0;
 let highscore = localStorage.getItem('highscore') || 0;
 let scoreElement = document.getElementById('score');
+let gameOverElement = document.getElementById('game-over');
 
 /* methods */
 window.onload = () => {
   document.getElementById('highscore').innerHTML = `Highscore: ${highscore}`;
 
   board = document.getElementById('board');
-  board.height = COLS * BLOCK_SIZE; // i.e. 625 pixels
-  board.width = ROWS * BLOCK_SIZE;
+  board.height = BOARD_HEIGHT;
+  board.width = BOARD_WIDTH;
   context = board.getContext('2d');
 
   setNewFoodLocation();
@@ -53,7 +56,8 @@ const updateBoard = () => {
 };
 
 const updateSnakeOnBoard = () => {
-  moveSnakeThroughWalls();
+  // moveSnakeThroughWalls();
+
   // getting rid of last element (tail) because snake is moving ahead
   for (let i = snakeBody.length - 1; i > 0; i--) {
     snakeBody[i] = snakeBody[i - 1];
@@ -68,10 +72,9 @@ const updateSnakeOnBoard = () => {
   snakeX += velocityX * BLOCK_SIZE;
   snakeY += velocityY * BLOCK_SIZE;
 
-  // drawing new head BUT not adding it to array; that will happen in next render
+  // drawing new head but NOT adding it to snakeBody; that will happen in next render
   context.fillStyle = SNAKE_COLOR;
   context.fillRect(snakeX, snakeY, BLOCK_SIZE, BLOCK_SIZE);
-  // context.roundRect(snakeX, snakeY, BLOCK_SIZE, BLOCK_SIZE, 5);
 
   // drawing rest of the snake body - element at 0 is prev head so snake looks attached
   for (let i = 0; i < snakeBody.length; i++) {
@@ -80,32 +83,59 @@ const updateSnakeOnBoard = () => {
   } 
 };
 
-const moveSnakeThroughWalls = () => {
-  if (snakeX < 0) {
-    snakeX = COLS * BLOCK_SIZE;
-  } else if (snakeX > COLS * BLOCK_SIZE) {
-    snakeX = 0;
-  } else if (snakeY < 0) {
-    snakeY = ROWS * BLOCK_SIZE;
-  } else if (snakeY > ROWS * BLOCK_SIZE) {
-    snakeY = 0;
-  } 
-}
+/* not using for now */
+// const moveSnakeThroughWalls = () => {
+//   if (snakeX < 0) {
+//     snakeX = COLS * BLOCK_SIZE;
+//   } else if (snakeX > COLS * BLOCK_SIZE) {
+//     snakeX = 0;
+//   } else if (snakeY < 0) {
+//     snakeY = ROWS * BLOCK_SIZE;
+//   } else if (snakeY > ROWS * BLOCK_SIZE) {
+//     snakeY = 0;
+//   } 
+// }
 
 const checkIfGameOver = () => {
+  if (snakeX < 0 || snakeX > BOARD_WIDTH || snakeY < 0 || snakeY > BOARD_HEIGHT) {
+    setGameOver();
+    return;
+  }
+
+  // if (snakeX < 0) {
+  //   snakeX = 0;
+  //   setGameOver();
+  // } else if (snakeX > BOARD_WIDTH) {
+  //   snakeX = BOARD_WIDTH;
+  //   setGameOver();
+  // } else if (snakeY < 0) {
+  //   snakeY = 0;
+  //   setGameOver();
+  // } else if (snakeY > BOARD_HEIGHT) {
+  //   snakeY = BOARD_HEIGHT;
+  //   setGameOver();
+  // }
+
   for (let i = 0; i < snakeBody.length; i++) {
     if (snakeX === snakeBody[i][0] && snakeY === snakeBody[i][1]) {
-      gameOver = true;
-      localStorage.setItem('highscore', Math.max(highscore, score)); 
+      setGameOver();
+      return;
     }
   }
+}
+
+const setGameOver = () => {
+  gameOver = true;
+  velocityX = velocityY = 0;
+  gameOverElement.classList.toggle("hide-element");
+  localStorage.setItem('highscore', Math.max(highscore, score));
 }
 
 const eatFoodIfPossible = () => {
   if (snakeX === foodX && snakeY === foodY) {
     score++;
-    highscore = Math.max(highscore, score);
     scoreElement.innerHTML = `Score: ${score}`;
+    highscore = Math.max(highscore, score);
     snakeBody.push([snakeX, snakeY]);
     setNewFoodLocation();
   }
@@ -130,8 +160,9 @@ const changeDirection = e => {
     velocityX = 1;
     velocityY = 0;
   } else if (e.code === 'Space') {
-    velocityX = velocityY = 0;
-    gameOver = true;
+    location.reload();
+    // velocityX = velocityY = 0;
+    // gameOver = true;
   }
 };
 

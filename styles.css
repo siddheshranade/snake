@@ -7,10 +7,26 @@ body {
   background: #FCD7AD;
 }
 
-#scores_div {
+#board {
+  border: 5px solid #5296A5;
+  border-radius: 5px;
+}
+
+#scores-div {
   /* border: 1px solid red; */
   display: flex;
   flex-direction: row;
   justify-content: center;
   gap: 20px;
+  font-size: 1.2rem;
+  font-weight: bolder;
+}
+
+#game-over {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.hide-element {
+  visibility: hidden;
 }
