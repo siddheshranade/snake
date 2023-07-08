@@ -29,17 +29,13 @@ body {
 }
 
 select {
-  /* why doesn't selecting by id work? */
+  /* TODO: why doesn't selecting by id work? */
   margin-top: 3px;
   padding: 2px 6px;
   background-color: #5296A5;
-  /* border-color: #5296A5; */
   border: 1px solid #5296A5;
   border-radius: 5px;
   color: white;
-  /* border: 5px solid red; */
-  /* font-family: inherit; */
-  /* height: 20px; */
 }
 
 
