@@ -5,22 +5,43 @@ body {
   font-family: 'Montserrat', sans-serif;
   text-align: center;
   background: #FCD7AD;
+  box-sizing: border-box;
 }
 
-#board {
-  border: 5px solid #5296A5;
+.board-defaults {
+  border: 1px solid #5296A5;
   border-radius: 5px;
 }
 
+.board-level-hard {
+  border: 5px solid #5296A5;
+}
+
 #scores-div {
-  /* border: 1px solid red; */
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
   gap: 20px;
   font-size: 1.2rem;
   font-weight: bolder;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
+
+select {
+  /* why doesn't selecting by id work? */
+  margin-top: 3px;
+  padding: 2px 6px;
+  background-color: #5296A5;
+  /* border-color: #5296A5; */
+  border: 1px solid #5296A5;
+  border-radius: 5px;
+  color: white;
+  /* border: 5px solid red; */
+  /* font-family: inherit; */
+  /* height: 20px; */
+}
+
 
 #game-over {
   font-size: 1.2rem;
