@@ -1,20 +1,26 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100&family=Poppins:wght@300&display=swap'); */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300&family=Poppins:wght@300&display=swap');
+
+:root {
+  --background-color-1: #FCD7AD;
+  --snake-color-1: #5296A5;
+  --food-color-1: #A57548;
+  --board-color-1: #82DDF0;
+}
 
 body {
   font-family: 'Montserrat', sans-serif;
   text-align: center;
-  background: #FCD7AD;
+  background: var(--background-color-1);
   box-sizing: border-box;
 }
 
 .board-defaults {
-  border: 1px solid #5296A5;
+  border: 1px solid var(--snake-color-1);
   border-radius: 5px;
 }
 
 .board-level-hard {
-  border: 5px solid #5296A5;
+  border: 5px solid var(--snake-color-1);
 }
 
 #scores-div {
@@ -32,8 +38,8 @@ select {
   /* TODO: why doesn't selecting by id work? */
   margin-top: 3px;
   padding: 2px 6px;
-  background-color: #5296A5;
-  border: 1px solid #5296A5;
+  background-color: var(--snake-color-1);
+  border: 1px solid var(--snake-color-1);
   border-radius: 5px;
   color: white;
 }

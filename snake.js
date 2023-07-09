@@ -10,9 +10,15 @@ BOARD.height = BOARD_HEIGHT;
 BOARD.width = BOARD_WIDTH;
 
 /* game styles */
-const BOARD_COLOR = '#82DDF0'; // #222
-const FOOD_COLOR = '#A57548 ';
-const SNAKE_COLOR = '#5296A5'; // lime
+const getColorFromCSS = color => {
+  return getComputedStyle(document.documentElement).getPropertyValue(color);
+};
+
+const COLOR = {
+  snake: getColorFromCSS('--snake-color-1'),
+  food: getColorFromCSS('--food-color-1'),
+  board: getColorFromCSS('--board-color-1')
+};
 
 /* snake details */
 let snakeX = BLOCK_SIZE * 5; // snake start position is fixed for now; 5 chosen randomly
@@ -32,7 +38,6 @@ let currentLevel = localStorage.getItem('level');
 currentLevel = currentLevel ? currentLevel : LEVELS.easy;
 levelsPicklist.value = currentLevel;
 BOARD.classList.toggle('board-level-hard', currentLevel === LEVELS.hard);
-//TODO: attach high score to level
 
 /* game state - scores */
 let gameOver = false;
@@ -53,7 +58,7 @@ window.onload = () => {
   let refreshRate = currentLevel === LEVELS.easy ? 90 : 76; 
 
   setInterval(updateBoard, refreshRate);
-}
+};
 
 const updateBoard = () => {
   if (gameOver) return;
@@ -85,11 +90,11 @@ const moveSnakeOnBoard = () => {
   snakeY += velocityY * BLOCK_SIZE;
 
   // drawing new head but NOT adding it to snakeBody; that will happen in next render
-  drawBlock(SNAKE_COLOR, snakeX, snakeY, BLOCK_SIZE, BLOCK_SIZE);
+  drawBlock(COLOR.snake, snakeX, snakeY, BLOCK_SIZE, BLOCK_SIZE);
 
   // drawing rest of the snake body - element at 0 is prev head so snake looks attached
   for (let i = 0; i < snakeBody.length; i++) {
-    drawBlock(SNAKE_COLOR, snakeBody[i][0], snakeBody[i][1], 
+    drawBlock(COLOR.snake, snakeBody[i][0], snakeBody[i][1], 
       BLOCK_SIZE, BLOCK_SIZE);
   } 
 };
@@ -104,7 +109,7 @@ const allowMovementThroughWalls = () => {
   } else if (snakeY > ROWS * BLOCK_SIZE) {
     snakeY = 0;
   } 
-}
+};
 
 const toggleDifficultyLevels = e => {
   let newLevel = e.target.value;
@@ -118,25 +123,25 @@ const checkIfGameOver = () => {
   }
 
   checkIfSnakeTouchedItself();
-}
+};
 
 const checkIfAnyWallTouched = () => {
   if (snakeX < 0) {
-    drawBlock(SNAKE_COLOR, 0, snakeY, BLOCK_SIZE, BLOCK_SIZE);
+    drawBlock(COLOR.snake, 0, snakeY, BLOCK_SIZE, BLOCK_SIZE);
     setGameOver();
   } else if (snakeX > BOARD_WIDTH) {
-    drawBlock(SNAKE_COLOR, BOARD_WIDTH - BLOCK_SIZE, snakeY, 
+    drawBlock(COLOR.snake, BOARD_WIDTH - BLOCK_SIZE, snakeY, 
       BLOCK_SIZE, BLOCK_SIZE);
     setGameOver();
   } else if (snakeY < 0) {
-    drawBlock(SNAKE_COLOR, snakeX, 0, BLOCK_SIZE, BLOCK_SIZE);
+    drawBlock(COLOR.snake, snakeX, 0, BLOCK_SIZE, BLOCK_SIZE);
     setGameOver();
   } else if (snakeY > BOARD_HEIGHT) {
-    drawBlock(SNAKE_COLOR, snakeX, BOARD_HEIGHT - BLOCK_SIZE, 
+    drawBlock(COLOR.snake, snakeX, BOARD_HEIGHT - BLOCK_SIZE, 
       BLOCK_SIZE, BLOCK_SIZE);
     setGameOver();
   }
-}
+};
 
 const checkIfSnakeTouchedItself = () => {
   for (let i = 0; i < snakeBody.length; i++) {
@@ -145,14 +150,14 @@ const checkIfSnakeTouchedItself = () => {
       return;
     }
   }
-}
+};
 
 const setGameOver = () => {
   gameOver = true;
   velocityX = velocityY = 0;
   gameOverElement.classList.toggle("hide-element");
   localStorage.setItem(`${currentLevel}-highscore`, Math.max(highscore, score));
-}
+};
 
 const eatFoodIfPossible = () => {
   if (snakeX === foodX && snakeY === foodY) {
@@ -193,15 +198,15 @@ const changeSnakeDirection = e => {
 
 const refreshBoard = () => {
   // in this case the block is the entire board
-  drawBlock(BOARD_COLOR, 0, 0, BOARD_WIDTH, BOARD_HEIGHT);
+  drawBlock(COLOR.board, 0, 0, BOARD_WIDTH, BOARD_HEIGHT);
   
 };
 
 const updateFoodOnBoard = () => {
-  drawBlock(FOOD_COLOR, foodX, foodY, BLOCK_SIZE, BLOCK_SIZE);
+  drawBlock(COLOR.food, foodX, foodY, BLOCK_SIZE, BLOCK_SIZE);
 };
 
 const drawBlock = (blockColor, x, y, width, height) => {
   CONTEXT.fillStyle = blockColor;
   CONTEXT.fillRect(x, y, width, height);
-}
+};
