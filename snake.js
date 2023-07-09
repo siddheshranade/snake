@@ -25,15 +25,6 @@ let snakeBody = [];
 let foodX;
 let foodY;
 
-/* game state - scores */
-let gameOver = false;
-let score = 0;
-let highscore = localStorage.getItem('highscore') || 0;
-let highscoreElement = document.getElementById('highscore');
-highscoreElement.innerHTML = `Highscore: ${highscore}`;
-let scoreElement = document.getElementById('score');
-let gameOverElement = document.getElementById('game-over');
-
 /* game state - difficulty level */
 const LEVELS = { easy: 'easy', hard: 'hard' };
 let levelsPicklist = document.getElementById('levels-picklist');
@@ -42,6 +33,15 @@ currentLevel = currentLevel ? currentLevel : LEVELS.easy;
 levelsPicklist.value = currentLevel;
 BOARD.classList.toggle('board-level-hard', currentLevel === LEVELS.hard);
 //TODO: attach high score to level
+
+/* game state - scores */
+let gameOver = false;
+let score = 0;
+let highscore = localStorage.getItem(`${currentLevel}-highscore`) || 0;
+let highscoreElement = document.getElementById('highscore');
+highscoreElement.innerHTML = `${currentLevel}-highscore: ${highscore}`;
+let scoreElement = document.getElementById('score');
+let gameOverElement = document.getElementById('game-over');
 
 /* methods */
 window.onload = () => {
@@ -151,7 +151,7 @@ const setGameOver = () => {
   gameOver = true;
   velocityX = velocityY = 0;
   gameOverElement.classList.toggle("hide-element");
-  localStorage.setItem('highscore', Math.max(highscore, score));
+  localStorage.setItem(`${currentLevel}-highscore`, Math.max(highscore, score));
 }
 
 const eatFoodIfPossible = () => {
