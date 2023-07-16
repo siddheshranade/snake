@@ -9,16 +9,27 @@ const CONTEXT = BOARD.getContext('2d');
 BOARD.height = BOARD_HEIGHT;
 BOARD.width = BOARD_WIDTH;
 
-/* game styles */
-const getColorFromCSS = color => {
-  return getComputedStyle(document.documentElement).getPropertyValue(color);
-};
+/* game theme */
+let toggleThemeButton = document.getElementById('theme-toggle');  
+const COLOR = {};
+setTheme();
 
-const COLOR = {
-  snake: getColorFromCSS('--snake-color-1'),
-  food: getColorFromCSS('--food-color-1'),
-  board: getColorFromCSS('--board-color-1')
-};
+/* game state - difficulty level */
+const LEVELS = { easy: 'easy', hard: 'hard' };
+let levelsPicklistElement = document.getElementById('levels-picklist');
+let currentLevel = localStorage.getItem('level');
+currentLevel = currentLevel ? currentLevel : LEVELS.easy;
+levelsPicklistElement.value = currentLevel;
+BOARD.classList.toggle('board-level-hard', currentLevel === LEVELS.hard);
+
+/* game state - scores */
+let gameOver = false;
+let score = 0;
+let highscore = localStorage.getItem(`${currentLevel}-highscore`) || 0;
+let highscoreElement = document.getElementById('highscore');
+highscoreElement.innerHTML = `${currentLevel}-highscore: ${highscore}`;
+let scoreElement = document.getElementById('score');
+let gameOverElement = document.getElementById('game-over');
 
 /* snake details */
 let snakeX = BLOCK_SIZE * 5; // snake start position is fixed for now; 5 chosen randomly
@@ -31,33 +42,15 @@ let snakeBody = [];
 let foodX;
 let foodY;
 
-/* game state - difficulty level */
-const LEVELS = { easy: 'easy', hard: 'hard' };
-let levelsPicklist = document.getElementById('levels-picklist');
-let currentLevel = localStorage.getItem('level');
-currentLevel = currentLevel ? currentLevel : LEVELS.easy;
-levelsPicklist.value = currentLevel;
-BOARD.classList.toggle('board-level-hard', currentLevel === LEVELS.hard);
-
-/* game state - scores */
-let gameOver = false;
-let score = 0;
-let highscore = localStorage.getItem(`${currentLevel}-highscore`) || 0;
-let highscoreElement = document.getElementById('highscore');
-highscoreElement.innerHTML = `${currentLevel}-highscore: ${highscore}`;
-let scoreElement = document.getElementById('score');
-let gameOverElement = document.getElementById('game-over');
-
 /* methods */
 window.onload = () => {
   setNewFoodLocation();
-  levelsPicklist.addEventListener('change', toggleDifficultyLevels);
+  levelsPicklistElement.addEventListener('change', toggleDifficultyLevels);
+  toggleThemeButton.addEventListener('click', () => setTheme(true));
   document.addEventListener('keyup', changeSnakeDirection);
 
-  // TODO: beta test to see if different speeds needed
-  let refreshRate = currentLevel === LEVELS.easy ? 90 : 76; 
-
-  setInterval(updateBoard, refreshRate);
+  let boardRefreshRate = currentLevel === LEVELS.easy ? 90 : 76;
+  setInterval(updateBoard, boardRefreshRate);
 };
 
 const updateBoard = () => {
@@ -115,6 +108,37 @@ const toggleDifficultyLevels = e => {
   let newLevel = e.target.value;
   localStorage.setItem('level', newLevel);
   location.reload(); // game must restart anytime the level is changed
+};
+
+function setTheme(toggleTheme = false) {
+  const rootElement = document.documentElement;
+  let isDarkTheme = localStorage.getItem('theme') === 'true';
+
+  if (toggleTheme) {
+    isDarkTheme = !isDarkTheme;
+  }
+
+  //TODO: rewrite to be more extendable to more themes
+  if (isDarkTheme) {
+    rootElement.style.setProperty('--background-color', 'var(--background-color-2)');
+    rootElement.style.setProperty('--snake-color', 'var(--snake-color-2)');
+    rootElement.style.setProperty('--food-color', 'var(--food-color-2)');
+    rootElement.style.setProperty('--board-color', 'var(--board-color-2)');
+    rootElement.style.setProperty('--text-color', 'var(--text-color-2)');
+  } else {
+    rootElement.style.setProperty('--background-color', 'var(--background-color-1)');
+    rootElement.style.setProperty('--snake-color', 'var(--snake-color-1)');
+    rootElement.style.setProperty('--food-color', 'var(--food-color-1)');
+    rootElement.style.setProperty('--board-color', 'var(--board-color-1)');
+    rootElement.style.setProperty('--text-color', 'var(--text-color-1)');
+  }
+
+  localStorage.setItem('theme', isDarkTheme);
+
+  let rootElementStyles = getComputedStyle(rootElement);
+  COLOR.board = rootElementStyles.getPropertyValue('--board-color');
+  COLOR.snake = rootElementStyles.getPropertyValue('--snake-color');
+  COLOR.food = rootElementStyles.getPropertyValue('--food-color');
 };
 
 const checkIfGameOver = () => {
