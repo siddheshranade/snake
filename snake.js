@@ -4,23 +4,22 @@ const ROWS = 25;
 const COLS = 25;
 const BOARD_HEIGHT = ROWS * BLOCK_SIZE;
 const BOARD_WIDTH = COLS * BLOCK_SIZE;
+
+/* canvas details */
 const BOARD = document.querySelector('.board-defaults');
 const CONTEXT = BOARD.getContext('2d');
 BOARD.height = BOARD_HEIGHT;
 BOARD.width = BOARD_WIDTH;
 
-/* game theme */
-let toggleThemeButton = document.getElementById('theme-toggle');  
+/* color theme */
 const COLOR = {};
-setTheme();
 
 /* game state - difficulty level */
 const LEVELS = { easy: 'easy', hard: 'hard' };
+let currentLevel = localStorage.getItem('level') || LEVELS.easy;
 let levelsPicklistElement = document.getElementById('levels-picklist');
-let currentLevel = localStorage.getItem('level');
-currentLevel = currentLevel ? currentLevel : LEVELS.easy;
 levelsPicklistElement.value = currentLevel;
-BOARD.classList.toggle('board-level-hard', currentLevel === LEVELS.hard);
+BOARD.classList.toggle('board-level-hard', currentLevel === LEVELS.hard); // adds walls to board
 
 /* game state - scores */
 let gameOver = false;
@@ -32,7 +31,8 @@ let scoreElement = document.getElementById('score');
 let gameOverElement = document.getElementById('game-over');
 
 /* snake details */
-let snakeX = BLOCK_SIZE * 5; // snake start position is fixed for now; 5 chosen randomly
+// snake start position is fixed at (5, 5) for now
+let snakeX = BLOCK_SIZE * 5;
 let snakeY = BLOCK_SIZE * 5;
 let velocityX = 0;
 let velocityY = 0;
@@ -44,14 +44,17 @@ let foodY;
 
 /* methods */
 window.onload = () => {
+  setTheme();
   setNewFoodLocation();
-  levelsPicklistElement.addEventListener('change', toggleDifficultyLevels);
-  toggleThemeButton.addEventListener('click', () => setTheme(true));
-  document.addEventListener('keyup', changeSnakeDirection);
+  addListeners();
 
-  let boardRefreshRate = currentLevel === LEVELS.easy ? 90 : 76;
-  setInterval(updateBoard, boardRefreshRate);
+  setInterval(updateBoard, getBoardRefreshRate());
 };
+
+const addListeners = () => {
+  levelsPicklistElement.addEventListener('change', toggleDifficultyLevels);
+  document.addEventListener('keyup', changeSnakeDirection);
+}
 
 const updateBoard = () => {
   if (gameOver) return;
@@ -107,35 +110,12 @@ const allowMovementThroughWalls = () => {
 const toggleDifficultyLevels = e => {
   let newLevel = e.target.value;
   localStorage.setItem('level', newLevel);
-  location.reload(); // game must restart anytime the level is changed
+  location.reload(); // game must immedaitely restart whenever the level is toggled
 };
 
-function setTheme(toggleTheme = false) {
-  const rootElement = document.documentElement;
-  let isDarkTheme = localStorage.getItem('theme') === 'true';
+const setTheme = () => {
+  let rootElementStyles = getComputedStyle(document.documentElement);
 
-  if (toggleTheme) {
-    isDarkTheme = !isDarkTheme;
-  }
-
-  //TODO: rewrite to be more extendable to more themes
-  if (isDarkTheme) {
-    rootElement.style.setProperty('--background-color', 'var(--background-color-2)');
-    rootElement.style.setProperty('--snake-color', 'var(--snake-color-2)');
-    rootElement.style.setProperty('--food-color', 'var(--food-color-2)');
-    rootElement.style.setProperty('--board-color', 'var(--board-color-2)');
-    rootElement.style.setProperty('--text-color', 'var(--text-color-2)');
-  } else {
-    rootElement.style.setProperty('--background-color', 'var(--background-color-1)');
-    rootElement.style.setProperty('--snake-color', 'var(--snake-color-1)');
-    rootElement.style.setProperty('--food-color', 'var(--food-color-1)');
-    rootElement.style.setProperty('--board-color', 'var(--board-color-1)');
-    rootElement.style.setProperty('--text-color', 'var(--text-color-1)');
-  }
-
-  localStorage.setItem('theme', isDarkTheme);
-
-  let rootElementStyles = getComputedStyle(rootElement);
   COLOR.board = rootElementStyles.getPropertyValue('--board-color');
   COLOR.snake = rootElementStyles.getPropertyValue('--snake-color');
   COLOR.food = rootElementStyles.getPropertyValue('--food-color');
@@ -187,7 +167,7 @@ const eatFoodIfPossible = () => {
   if (snakeX === foodX && snakeY === foodY) {
     score++;
     scoreElement.innerHTML = `Score: ${score}`;
-    snakeBody.push([snakeX, snakeY]);
+    snakeBody.push([snakeX, snakeY]); // only place snake grows from
     setNewFoodLocation();
   }
 };
@@ -213,17 +193,16 @@ const changeSnakeDirection = e => {
   } else if (e.code === 'Space') {
     // refreshes the page i.e. restarts game
     location.reload();
-  } 
-  // TODO: Only for debugging. Remove in prod.
-  else if (e.code === 'KeyK') {
-    velocityX = velocityY = 0;
   }
 };
+
+const getBoardRefreshRate = () => {
+  return currentLevel === LEVELS.easy ? 90 : 76;
+}
 
 const refreshBoard = () => {
   // in this case the block is the entire board
   drawBlock(COLOR.board, 0, 0, BOARD_WIDTH, BOARD_HEIGHT);
-  
 };
 
 const updateFoodOnBoard = () => {

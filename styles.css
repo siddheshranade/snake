@@ -1,25 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300&family=Poppins:wght@300&display=swap');
 
 :root {
-  /* light theme */
-  --background-color-1: #FCD7AD;
-  --snake-color-1: #5296A5;
-  --food-color-1: #A57548;
-  --board-color-1: #82DDF0;
-  --text-color-2: #000;
-
-  /* dark theme */
-  --background-color-2: #1B2845;
-  --snake-color-2: #FF4F79;
-  --food-color-2: #A11692;
-  --board-color-2: #17183B;
-  --text-color-2: #fff;
-
-  --background-color: var(--background-color-1);
-  --snake-color: var(--snake-color-1);
-  --food-color: var(--food-color-1);
-  --board-color: var(--board-color-1);
-  --text-color: var(--text-color-1);
+  /* neon theme */
+  --background-color: #1B2845;
+  --snake-color: #FF4F79;
+  --food-color: #A11692;
+  --board-color: #17183B;
+  --text-color: #fff;
 }
 
 body {
@@ -40,7 +27,7 @@ body {
 }
 
 #scores-div {
-  gap: 24px;
+  gap: 20px;
   font-size: 1.2rem;
   font-weight: bolder;
 
@@ -48,6 +35,15 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+
+#theme-toggle-btn {
+  margin-top: 3px;
+  padding: 3px 4px;
+  background-color: var(--snake-color);
+  border: 1px solid var(--snake-color);
+  border-radius: 5px;
+  color: var(--text-color);
 }
 
 select {
