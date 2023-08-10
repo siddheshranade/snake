@@ -2,7 +2,7 @@
 
 :root {
   /* neon theme */
-  --background-color: #1B2845;
+  --background-color: #1B2845; /*#1B2845*/
   --snake-color: #FF4F79;
   --food-color: #A11692;
   --board-color: #17183B;
@@ -12,9 +12,17 @@
 body {
   font-family: 'Montserrat', sans-serif;
   text-align: center;
+  height: 98vh;
   background: var(--background-color);
   box-sizing: border-box;
   color: var(--text-color);
+
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
 }
 
 .board-defaults {
@@ -62,4 +70,28 @@ select {
 
 .hide-element {
   visibility: hidden;
+}
+
+footer {
+  opacity: 0.2;
+  margin-top: 6rem;
+}
+
+#footer-link {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#github-image {
+  max-width: 1.5rem;
+  max-height: 1.5rem;
+  margin: 0 0.3rem;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 0.9rem;
 }

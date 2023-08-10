@@ -5,17 +5,29 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-  <h1>Snake</h1>
-  <div id="scores-div">
-    <select id="levels-picklist" name="levels" >
-      <option value="easy" selected>Easy</option>
-      <option value="hard">Hard</option>
-    </select>
-    <p id="score">score: 0</p>
-    <p id="highscore">highscore: 0</p>
-  </div>
-  <canvas class="board-defaults"></canvas>
-  <p id="game-over" class="hide-element">GAME OVER!<br>Press SPACE to restart.</p>
+  <main>
+    <header>
+      <h1>Snake</h1>
+    </header>
+    <div id="scores-div">
+      <select id="levels-picklist" name="levels" >
+        <option value="easy" selected>Easy</option>
+        <option value="hard">Hard</option>
+      </select>
+      <p id="score">score: 0</p>
+      <p id="highscore">highscore: 0</p>
+    </div>
+    <canvas class="board-defaults"></canvas>
+    <div>
+      <p id="game-over" class="hide-element">GAME OVER!<br>Press SPACE to restart.</p>
+    </div>
+  </main>
+  <footer>
+    <a href="https://github.com/siddheshranade/snake" target="_blank" id="footer-link">
+        <img src="media/github.png" alt="Github Logo" id="github-image">
+        <p>siddheshranade</p>
+    </a>
+  </footer>
   <script src="snake.js"></script>
 </body>
 </html>
