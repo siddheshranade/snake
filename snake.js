@@ -160,7 +160,13 @@ const setGameOver = () => {
   gameOver = true;
   velocityX = velocityY = 0;
   gameOverElement.classList.toggle("hide-element");
-  localStorage.setItem(`${currentLevel}-highscore`, Math.max(highscore, score));
+  if (score > highscore) {
+    let highscoreMessageElement = document.getElementById('highscore-message');
+    highscoreMessageElement.innerHTML = 'NEW HIGH SCORE!';
+
+    localStorage.setItem(`${currentLevel}-highscore`, score);
+  }
+  
 };
 
 const eatFoodIfPossible = () => {
