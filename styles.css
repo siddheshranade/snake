@@ -14,7 +14,7 @@ body {
   font-family: 'Raleway', sans-serif;
   font-weight: 100;
   text-align: center;
-  height: 98vh;
+  height: 95vh;
   background: var(--background-color);
   box-sizing: border-box;
   color: var(--text-color);
