@@ -2,12 +2,12 @@
 const BLOCK_SIZE = 18;
 const ROWS = 25;
 const COLS = 25;
-const BOARD_HEIGHT = ROWS * BLOCK_SIZE;
-const BOARD_WIDTH = COLS * BLOCK_SIZE;
 
 /* canvas details */
 const BOARD = document.querySelector('.board-defaults');
 const CONTEXT = BOARD.getContext('2d');
+const BOARD_HEIGHT = ROWS * BLOCK_SIZE;
+const BOARD_WIDTH = COLS * BLOCK_SIZE;
 BOARD.height = BOARD_HEIGHT;
 BOARD.width = BOARD_WIDTH;
 
@@ -133,14 +133,14 @@ const checkIfAnyWallTouched = () => {
   if (snakeX < 0) {
     drawBlock(COLOR.snake, 0, snakeY, BLOCK_SIZE, BLOCK_SIZE);
     setGameOver();
-  } else if (snakeX > BOARD_WIDTH) {
+  } else if (snakeX >= BOARD_WIDTH) {
     drawBlock(COLOR.snake, BOARD_WIDTH - BLOCK_SIZE, snakeY, 
       BLOCK_SIZE, BLOCK_SIZE);
     setGameOver();
   } else if (snakeY < 0) {
     drawBlock(COLOR.snake, snakeX, 0, BLOCK_SIZE, BLOCK_SIZE);
     setGameOver();
-  } else if (snakeY > BOARD_HEIGHT) {
+  } else if (snakeY >= BOARD_HEIGHT) {
     drawBlock(COLOR.snake, snakeX, BOARD_HEIGHT - BLOCK_SIZE, 
       BLOCK_SIZE, BLOCK_SIZE);
     setGameOver();
@@ -199,6 +199,9 @@ const changeSnakeDirection = e => {
   } else if (e.code === 'Space') {
     // refreshes the page i.e. restarts game
     location.reload();
+  } else if (e.code === 'KeyK') {
+    velocityX = 0;
+    velocityY = 0;
   }
 };
 
